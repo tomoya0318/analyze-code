@@ -28,6 +28,7 @@ for projectName in PROJECT_NAME_LIST:
                 continue
             if not in_messages_control:
                 continue
+            #title以外が来た時
             if  re.match(r'^\[\w', line):
                 in_messages_control = False
                 continue
