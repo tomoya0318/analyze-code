@@ -8,11 +8,18 @@ from utils import compare_convention
 
 PATH = f'{sys.path[-1]}/data'
 PATH_IN = f'{PATH}/processed/csv'
+PATH_OUT = f'{PATH}/out/tracking_all_convention.csv'
+
+#テスト用
 #PATH_IN = f'{PATH}/test'
-#PATH_OUT = f'{PATH}/out/tracking_all_convention.csv'
 #PATH_OUT = f'{PATH}/out/tracking_test_convention.csv'
-PATH_OUT = f'{PATH}/out/tracking_correct_convention.csv'
+
+#規約修正数表示用
+#PATH_OUT = f'{PATH}/out/tracking_correct_convention.csv'
+
+#規約発生数表示用
 #PATH_OUT = f'{PATH}/out/tracking_occur_convention.csv'
+
 PROJECT_NAME_LIST = get_file_name(PATH_IN)
 
 coding_convention_list = []
@@ -37,9 +44,10 @@ for file in sorted(files, key=lambda x: x.lower()):
     for key, value in coding_convention_dist.items():
         if value[1] == 0:
             continue
-        #coding_convention_dist[key] = round(value[0] / value[1], 2)
+        coding_convention_dist[key] = round(value[0] / value[1], 2)
+        
         #修正数
-        coding_convention_dist[key] = value[0]
+        #coding_convention_dist[key] = value[0]
         #発生数
         #coding_convention_dist[key] = value[1]
 

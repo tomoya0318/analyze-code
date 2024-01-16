@@ -10,6 +10,7 @@ PATH_OUT = f'{PATH}/out/test1_sort_cosine.csv'
 PROJECT_NAME_LIST = load_correction_data.get_project_name(PATH_IN)
 PROJECT_NUM = len(PROJECT_NAME_LIST)
 
+#データフレームの作成
 df = pd.DataFrame(columns=['Project 1', 'Project 2', 'Similarity', 'Count'])
 
 # 組み合わせの表示

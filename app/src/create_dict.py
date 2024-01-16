@@ -3,6 +3,7 @@ import re
 import sys
 sys.path.append("../")
 
+#文章が正規表現にマッチした場合，keyとvalueを返す
 def extract_data(text):
     pattern = re.compile(r'^(.*?)(\([^)]*\)):')
     match = pattern.match(text)
@@ -14,6 +15,7 @@ def extract_data(text):
     else:
         return None, None
 
+#keyとvalueを辞書に保存
 def process_strings(strings):
     result_dict = {}
 
@@ -28,6 +30,7 @@ def process_strings(strings):
 
     return result_dict
 
+#pylintのバージョンファイルから規約名と規約IDを取得
 def process_version_directory(version_directory):
     result_dict = {}
 
@@ -41,6 +44,7 @@ def process_version_directory(version_directory):
 
     return result_dict
 
+#.txtとして保存
 def save_to_file(data, output_path):
     with open(output_path, 'w') as f_out:
         for key, value in data.items():

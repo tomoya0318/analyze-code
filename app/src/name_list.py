@@ -12,13 +12,13 @@ class NameList:
         self.PATH = sys.path[-1]
         self.num = 75
         
-
+    #プロジェクト名の取得
     def getProjectName(self, num):
         path = self.PATH + 'data/pylintrc'
         self.PROJECT_NAME_LIST = get_file_name(path)
         return self.PROJECT_NAME_LIST[:num]
 
-
+    #規約名と規約IDの取得
     def getNameIdDict(self):
         path = self.PATH + 'data/version/nameList.txt'
         with open(path, 'r') as f:

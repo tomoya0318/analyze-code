@@ -15,6 +15,10 @@ PATH_OUT_SORTED = f'{PATH}/out/test_sort_cosine.csv'
 # PATH_OUT = f'{PATH}/out/cos_sim.csv'
 # PROJECT_NAME_LIST = get_file_name(f'{PATH}/test')
 
+PROJECT_NAME_LIST = load_correction_data.get_project_name(PATH_IN)
+project_correction_rates = load_correction_data.correction_from_csv(PATH_IN)
+PROJECT_NUM = len(PROJECT_NAME_LIST)
+
 # 表の作成
 def createFrame(output_list, path, project_names):
     df = pd.DataFrame(output_list)
@@ -22,9 +26,6 @@ def createFrame(output_list, path, project_names):
     df.columns = project_names
     df.to_csv(path)
 
-PROJECT_NAME_LIST = load_correction_data.get_project_name(PATH_IN)
-project_correction_rates = load_correction_data.correction_from_csv(PATH_IN)
-PROJECT_NUM = len(PROJECT_NAME_LIST)
 
 #コサイン類似度の計算
 result_list = [[] for _ in range(PROJECT_NUM)]   
