@@ -4,4 +4,9 @@ WORKDIR /work
 
 COPY . /work
 
-RUN pip install pandas
+RUN pip install --upgrade pip
+
+RUN pip install poetry &&\
+    poetry config virtualenvs.create false
+
+RUN poetry install

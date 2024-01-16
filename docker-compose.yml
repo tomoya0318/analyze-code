@@ -2,7 +2,7 @@ version: "3"
 services:
   app:
     build: ./app
-    container_name: 2024_Noguchi
+    container_name: analyze-code
     tty: true
     volumes:
       - ./app:/work

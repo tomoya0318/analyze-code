@@ -9,4 +9,4 @@ down:
 	@docker compose down
 
 exec:
-	@docker exec -it 2024_Noguchi bash
+	@docker exec -it analyze-code bash
