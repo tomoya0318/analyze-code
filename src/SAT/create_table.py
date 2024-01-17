@@ -1,7 +1,7 @@
 import pandas as pd
 import sys
 sys.path.append("../")
-from name_list import NameList
+from utils import NameList
 
 Nl = NameList()
 NUM_PROJECT = 75
@@ -78,5 +78,6 @@ def getResultDict(num):
 result_list = []
 for i in range(NUM_PROJECT):
     result_list.append(getResultDict(i))
-createFrame(result_list)
+print(result_list)
+#createFrame(result_list)
 print('end')

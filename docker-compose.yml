@@ -1,10 +1,17 @@
-version: "3"
+version: "3.9"
 services:
-  app:
-    build: ./app
+  analyzer:
+    build:
+      context: .
     container_name: analyze-code
     tty: true
     volumes:
-      - ./app:/work
-    working_dir: '/work'
+      - type: bind
+        source: .
+        target: /work
+      - type: volume
+        source: packages
+        target: /usr/local/lib/python3.12/site-packages
 
+volumes:
+  packages:

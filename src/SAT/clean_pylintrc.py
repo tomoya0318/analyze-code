@@ -1,7 +1,7 @@
 import re
 import sys
 sys.path.append("../")
-from name_list import NameList
+from utils import NameList
 
 # コメント、空白行を削除し、[MESSAGES CONTROL]の中身のみを出力
 Nl = NameList()
