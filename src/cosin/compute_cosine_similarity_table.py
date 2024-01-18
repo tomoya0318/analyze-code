@@ -3,10 +3,10 @@ import sys
 sys.path.append("../")
 from utils import calculate_cosin_similarity
 from utils import load_correction_data
+from constants import path
 
-PATH = f'{sys.path[-1]}/data/'
-PATH_IN = f'{PATH}/out/cleaned_tracking_all_convention.csv'
-PATH_OUT = f'{PATH}/out/test1_sort_cosine.csv'
+PATH_IN = f'{path.OUT}/cleaned_tracking_all_convention.csv'
+PATH_OUT = f'{path.OUT}/sort_cosine.csv'
 PROJECT_NAME_LIST = load_correction_data.get_project_name(PATH_IN)
 PROJECT_NUM = len(PROJECT_NAME_LIST)
 

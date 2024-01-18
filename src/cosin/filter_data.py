@@ -2,11 +2,11 @@ import pandas as pd
 import sys
 sys.path.append("../")
 from utils import get_file_name
+from constants import path
 
 THRESHOLD = 3
-PATH = f'{sys.path[-1]}/data'
-PATH_IN = f'{PATH}/out/tracking_all_convention.csv'
-PROJECT_NAME_LIST = get_file_name(f'{PATH}/processed/csv')
+PATH_IN = f'{path.OUT}/tracking_all_convention.csv'
+PROJECT_NAME_LIST = get_file_name(f'{path.PROCESSED}/csv')
 PROJECT_NUM = len(PROJECT_NAME_LIST)
 
 #None以外の数が閾値以下のプロジェクトを除外
@@ -22,4 +22,4 @@ for project_name in PROJECT_NAME_LIST:
 df = df.apply(lambda x: x.map(lambda x: 'None' if pd.isna(x) else x))
 
 #csvファイルに変換
-df.to_csv(f'{PATH}/out/cleaned_tracking_all_convention.csv')
+df.to_csv(f'{path.OUT}/cleaned_tracking_all_convention.csv')
