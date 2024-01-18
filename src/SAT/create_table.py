@@ -2,7 +2,7 @@ import pandas as pd
 import sys
 sys.path.append("../")
 from utils import NameList
-
+from constants import path
 Nl = NameList()
 NUM_PROJECT = 75
 PROJECT_NAME_LIST = Nl.getProjectName(NUM_PROJECT)
@@ -10,8 +10,7 @@ NAME_ID_DICT = Nl.getNameIdDict()
 
 V_NAME_LIST = list(NAME_ID_DICT.keys())
 V_KEY_LIST = list(NAME_ID_DICT.values())
-PATH = sys.path[-1] + '/data'
-PATH_OUT = f'{PATH}/out/to_csv_out.csv'
+PATH_OUT = f'{path.OUT}to_csv_out.csv'
 TAG_D = 'disable'
 TAG_I = 'disable-msg'
 TAG_flag = ''
@@ -69,7 +68,7 @@ def createFrame(output_list):
 def getResultDict(num):
     exist_list = []
     judge_id_dict = {}
-    path_in = f'{PATH}/processed/text/{PROJECT_NAME_LIST[num]}_pd.txt'
+    path_in = f'{path.PROCESSED}/text/{PROJECT_NAME_LIST[num]}_pd.txt'
     TAG_flag = extract_violations_from_file(path_in, exist_list)
     judge_id_dict = compare_conventions(TAG_flag, exist_list)
     return judge_id_dict
@@ -79,5 +78,5 @@ result_list = []
 for i in range(NUM_PROJECT):
     result_list.append(getResultDict(i))
 print(result_list)
-#createFrame(result_list)
+createFrame(result_list)
 print('end')

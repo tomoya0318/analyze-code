@@ -2,11 +2,12 @@ import re
 import sys
 sys.path.append("../")
 from utils import NameList
+from constants import path
 
 # コメント、空白行を削除し、[MESSAGES CONTROL]の中身のみを出力
 Nl = NameList()
 PROJECT_NAME_LIST = Nl.getProjectName(75)
-PATH = sys.path[-1] + '/data'
+PATH = path.DATA
 char_remove = '#'
 title = '[MESSAGES CONTROL]'
 TAG_N = 'disable='

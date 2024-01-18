@@ -3,10 +3,11 @@ import sys
 import os
 import numpy as np
 from sklearn.metrics import precision_score, recall_score, f1_score, accuracy_score # 評価指標算出用
-
 sys.path.append('../')
+from constants import path
 
-PATH = f'{sys.path[-1]}/data/predict_model'
+
+PATH = f'{path.DATA}/predict_model'
 #'Logistic', 'RandomForest', 'SVM'から選択
 model_name = 'RandomForest'
 PATH_IN = f'{PATH}/{model_name}/'
@@ -65,4 +66,4 @@ for id in data_dict.keys():
 df_combined = pd.DataFrame(result_dict)
 
 print(df_combined)
-df_combined.to_csv(f'{PATH}/out/{model_name}_{project}.csv')
+df_combined.to_csv(f'{path.OUT}/{model_name}_{project}.csv')

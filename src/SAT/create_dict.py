@@ -2,7 +2,7 @@ import os
 import re
 import sys
 sys.path.append("../")
-
+from constants import path
 #文章が正規表現にマッチした場合，keyとvalueを返す
 def extract_data(text):
     pattern = re.compile(r'^(.*?)(\([^)]*\)):')
@@ -51,9 +51,8 @@ def save_to_file(data, output_path):
             f_out.write(f"{key}: {value}\n")
 
 # メインの処理
-PATH =  sys.path[-1] + '/data/version'
-version_directory = PATH
-output_path = PATH + '/nameList.txt'
+version_directory = f'{path.DATA}/version'
+output_path = f'{version_directory}/nameList.txt'
 
 result = process_version_directory(version_directory)
 save_to_file(result, output_path)
