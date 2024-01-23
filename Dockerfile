@@ -15,7 +15,7 @@ ENV TERM xterm
 
 RUN pip install --upgrade pip
 
-RUN pip install poetry
-
-RUN poetry install &&\
+RUN pip install poetry&&\
     poetry config virtualenvs.create false
+
+RUN poetry install
