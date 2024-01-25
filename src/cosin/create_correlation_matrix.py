@@ -1,6 +1,4 @@
 import pandas as pd
-import sys
-sys.path.append("../")
 from utils import calculate_cosin_similarity
 from utils import load_correction_data
 from constants import path

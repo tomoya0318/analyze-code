@@ -1,7 +1,5 @@
 import pandas as pd
 import os
-import sys
-sys.path.append("../")
 from utils import get_file_name
 from utils import tracking_convention
 from utils import compare_convention

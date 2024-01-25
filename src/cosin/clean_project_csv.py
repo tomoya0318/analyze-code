@@ -1,5 +1,3 @@
-import sys
-sys.path.append("../")
 from utils import clean_csv
 from constants import path
 

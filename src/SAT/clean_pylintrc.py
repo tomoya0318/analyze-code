@@ -1,6 +1,4 @@
 import re
-import sys
-sys.path.append("../")
 from utils import NameList
 from constants import path
 

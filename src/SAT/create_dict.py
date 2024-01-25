@@ -1,7 +1,5 @@
 import os
 import re
-import sys
-sys.path.append("../")
 from constants import path
 #文章が正規表現にマッチした場合，keyとvalueを返す
 def extract_data(text):

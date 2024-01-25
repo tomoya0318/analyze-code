@@ -1,15 +1,12 @@
-import os
-import sys
-sys.path.append("../")
 from utils import extract_data
 from utils import get_file_name
-
+from constants import path
 
 class NameList:
     def __init__(self):
         self.PROJECT_NAME_LIST = []
         self.NAME_ID_DICT = {}
-        self.PATH = sys.path[-1]
+        self.PATH = path.ROOT
         self.num = 75
         
     #プロジェクト名の取得

@@ -1,6 +1,4 @@
 import pandas as pd
-import sys
-sys.path.append("../")
 from utils import get_file_name
 from constants import path
 

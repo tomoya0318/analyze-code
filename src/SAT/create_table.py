@@ -1,6 +1,4 @@
 import pandas as pd
-import sys
-sys.path.append("../")
 from utils import NameList
 from constants import path
 Nl = NameList()

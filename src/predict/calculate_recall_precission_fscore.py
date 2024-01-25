@@ -1,9 +1,7 @@
 import pandas as pd
-import sys
 import os
 import numpy as np
 from sklearn.metrics import precision_score, recall_score, f1_score, accuracy_score # 評価指標算出用
-sys.path.append('../')
 from constants import path
 
 
