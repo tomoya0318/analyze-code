@@ -1,7 +1,8 @@
 import re
 
+
 def extract_data(text):
-    pattern = re.compile(r'^(.*?):\s+\(([^)]*)\)$')
+    pattern = re.compile(r"^(.*?):\s+\(([^)]*)\)$")
     match = pattern.match(text)
 
     if match:

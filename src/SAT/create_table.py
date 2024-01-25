@@ -1,6 +1,7 @@
 import pandas as pd
 from utils import NameList
 from constants import path
+
 Nl = NameList()
 NUM_PROJECT = 75
 PROJECT_NAME_LIST = Nl.getProjectName(NUM_PROJECT)
@@ -8,20 +9,21 @@ NAME_ID_DICT = Nl.getNameIdDict()
 
 V_NAME_LIST = list(NAME_ID_DICT.keys())
 V_KEY_LIST = list(NAME_ID_DICT.values())
-PATH_OUT = f'{path.OUT}to_csv_out.csv'
-TAG_D = 'disable'
-TAG_I = 'disable-msg'
-TAG_flag = ''
+PATH_OUT = f"{path.OUT}to_csv_out.csv"
+TAG_D = "disable"
+TAG_I = "disable-msg"
+TAG_flag = ""
 
 # 集計用のリスト作成
 count_id_dict = {}
 for key in V_KEY_LIST:
     count_id_dict[key] = 0
 
+
 # ファイルから規約取得
 def extract_violations_from_file(path, file_list):
-    flag = ''
-    with open(path, 'r') as f:
+    flag = ""
+    with open(path, "r") as f:
         for line in f:
             if TAG_I in line:
                 flag = TAG_I
@@ -29,27 +31,28 @@ def extract_violations_from_file(path, file_list):
             if TAG_D in line:
                 flag = TAG_D
                 continue
-            file_list.extend(line.split(','))
+            file_list.extend(line.split(","))
     return flag
+
 
 # 規約の比較
 def compare_conventions(flag, input_list):
     output_dict = {}
 
     for key in V_KEY_LIST:
-        output_dict[key] = 'FALSE'
+        output_dict[key] = "FALSE"
 
     if flag == TAG_D:
         for Il in input_list:
             for i in range(len(NAME_ID_DICT)):
                 if Il in V_NAME_LIST[i] or Il in V_KEY_LIST[i]:
-                    output_dict[V_KEY_LIST[i]] = 'TRUE'
+                    output_dict[V_KEY_LIST[i]] = "TRUE"
                     count_id_dict[V_KEY_LIST[i]] += 1
     elif flag == TAG_I:
         for Il in input_list:
             for i in range(len(NAME_ID_DICT)):
                 if Il in V_KEY_LIST[i]:
-                    output_dict[V_KEY_LIST[i]] = 'TRUE'
+                    output_dict[V_KEY_LIST[i]] = "TRUE"
                     count_id_dict[V_KEY_LIST[i]] += 1
 
     return output_dict
@@ -66,10 +69,11 @@ def createFrame(output_list):
 def getResultDict(num):
     exist_list = []
     judge_id_dict = {}
-    path_in = f'{path.PROCESSED}/text/{PROJECT_NAME_LIST[num]}_pd.txt'
+    path_in = f"{path.PROCESSED}/text/{PROJECT_NAME_LIST[num]}_pd.txt"
     TAG_flag = extract_violations_from_file(path_in, exist_list)
     judge_id_dict = compare_conventions(TAG_flag, exist_list)
     return judge_id_dict
+
 
 # プロジェクト数分回す
 result_list = []
@@ -77,4 +81,4 @@ for i in range(NUM_PROJECT):
     result_list.append(getResultDict(i))
 print(result_list)
 createFrame(result_list)
-print('end')
+print("end")

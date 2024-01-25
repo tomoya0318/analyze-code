@@ -1,5 +1,6 @@
 import os
 
+
 def get_file_name(directory):
     FILE_NAME_LIST = []
     for filename in sorted(os.listdir(directory), key=lambda x: x.lower()):
@@ -8,7 +9,7 @@ def get_file_name(directory):
         if os.path.isdir(full_path):
             FILE_NAME_LIST.append(filename)
             continue
-        elif not filename.startswith('.'):
-            FILE_NAME_LIST.append(os.path.splitext(filename)[0])           
+        elif not filename.startswith("."):
+            FILE_NAME_LIST.append(os.path.splitext(filename)[0])
 
     return FILE_NAME_LIST

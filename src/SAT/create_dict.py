@@ -1,9 +1,11 @@
 import os
 import re
 from constants import path
-#文章が正規表現にマッチした場合，keyとvalueを返す
+
+
+# 文章が正規表現にマッチした場合，keyとvalueを返す
 def extract_data(text):
-    pattern = re.compile(r'^(.*?)(\([^)]*\)):')
+    pattern = re.compile(r"^(.*?)(\([^)]*\)):")
     match = pattern.match(text)
 
     if match:
@@ -13,7 +15,8 @@ def extract_data(text):
     else:
         return None, None
 
-#keyとvalueを辞書に保存
+
+# keyとvalueを辞書に保存
 def process_strings(strings):
     result_dict = {}
 
@@ -28,31 +31,34 @@ def process_strings(strings):
 
     return result_dict
 
-#pylintのバージョンファイルから規約名と規約IDを取得
+
+# pylintのバージョンファイルから規約名と規約IDを取得
 def process_version_directory(version_directory):
     result_dict = {}
 
     for filename in os.listdir(version_directory):
         if filename.startswith("v_") and filename.endswith(".txt"):
-            #print(filename)
+            # print(filename)
             file_path = os.path.join(version_directory, filename)
-            with open(file_path, 'r') as f:
+            with open(file_path, "r") as f:
                 result = process_strings(f.readlines())
                 result_dict.update(result)
 
     return result_dict
 
-#.txtとして保存
+
+# .txtとして保存
 def save_to_file(data, output_path):
-    with open(output_path, 'w') as f_out:
+    with open(output_path, "w") as f_out:
         for key, value in data.items():
             f_out.write(f"{key}: {value}\n")
 
+
 # メインの処理
-version_directory = f'{path.DATA}/version'
-output_path = f'{version_directory}/nameList.txt'
+version_directory = f"{path.DATA}/version"
+output_path = f"{version_directory}/nameList.txt"
 
 result = process_version_directory(version_directory)
 save_to_file(result, output_path)
 
-print('end')
+print("end")
