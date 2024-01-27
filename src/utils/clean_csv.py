@@ -1,9 +1,16 @@
 import os
 import pandas as pd
 
-
-# 行の削除
 def delete_rows(in_directory, out_directory, init, last):
+    """指定行の削除
+
+    Args:
+        in_directory (path): 行を削除するファイルへのpath
+        out_directory (_type_): 行を削除した後のファイルの出力先
+        init (_type_): 削除する最初の行
+        last (_type_): 削除する最後の行
+    """
+
     files = os.listdir(in_directory)
     for file in sorted(files, key=lambda x: x.lower()):
         print(file)
@@ -20,6 +27,15 @@ def delete_rows(in_directory, out_directory, init, last):
 
 # 列の削除
 def delete_columns(in_directory, out_directory, init, last):
+    """指定列の削除
+
+    Args:
+        in_directory (path): 列を削除するファイルへのpath
+        out_directory (_type_): 列を削除した後のファイルの出力先
+        init (_type_): 削除する最初の列
+        last (_type_): 削除する最後の列
+    """
+
     files = os.listdir(in_directory)
     for file in sorted(files, key=lambda x: x.lower()):
         full_path = os.path.join(in_directory, file)
