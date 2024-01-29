@@ -5,7 +5,7 @@ from utils import tracking_convention
 from utils import compare_convention
 from constants import path
 
-PATH_IN = f"{path.PROCESSED}/csv"
+PATH_IN = f"{path.PRERESULT}/raw_model"
 PATH_OUT = f"{path.OUT}/tracking_all_convention.csv"
 
 # テスト用
