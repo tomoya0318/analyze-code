@@ -1,39 +1,39 @@
-import os
 import pandas as pd
-from predict import machine_learning_models
-
-# 宣言
-model_name = "RandomForest"  # Logistic, RandomForest, SVMの３種類から選ぶ
-
-# for文を回すファイル名を取得
-# dir_path = "dataset/row_data"
-
-# # dataset内のプロジェクト名一覧取得
-# project_list = [
-#     f for f in os.listdir(dir_path) if os.path.isdir(os.path.join(dir_path, f))
-# ]
-
-project_list = ["python-sdk", "hickle", "GPflow"]
+import os
+from modules import predict_single
+from constants import path
+def main():
+    # 宣言
+    model_name = "RandomForest"  # Logistic, RandomForest, SVMの３種類から選ぶ
+    #単体で予測するプロジェクト名
+    project_list = ["python-sdk", "hickle", "GPflow"]
+    conventional_method(project_list, model_name)
 
 
-# 結果格納用のDFの宣言
-result_df = pd.DataFrame(columns=["precision", "recall", "f1_score", "accuracy"])
-bunseki_df = pd.DataFrame()
+def conventional_method(project_list, model_name):
+    """project_list内のプロジェクト名単体での予測精度の算出
 
-# 従来手法の実行:machine_learning_models.predict
-for file_name in project_list:
-    try:
-        df_value = pd.read_csv(f"./few_data/{file_name}_value.csv")
-        df_label = pd.read_csv(f"./few_data/{file_name}_label.csv", header=None)
-    except pd.errors.EmptyDataError as e:
-        print(file_name)
-    tmp1, tmp2 = machine_learning_models.predict(df_value, df_label, file_name, model_name)
-    # 全体の結果
-    # result_df = pd.concat([result_df, tmp1], axis=0)
-    # 規約ごとの結果
-    tmp2.to_csv(f"results/{model_name}{file_name}.csv")
+    Args:
+        project_list (list): 予測するプロジェクトのリスト
+        model_name (str): 使用するモデル名
+    """
+    # 結果格納用
+    result_df = pd.DataFrame(columns=["precision", "recall", "f1_score", "accuracy"])
+    dir = f'{path.PRERESULT}/{model_name}'
+    if not os.path.exists(dir):
+        os.makedirs(dir)
 
-# result_df.to_csv(f"results/{model_name}.csv")
-# tmp2.to_csv(f"results/{model_name}.csv")
+    # 単体でのモデル作成，予測
+    for file_name in project_list:
+        try:
+            df_value = pd.read_csv(f"{path.ML}/{file_name}_value.csv")
+            df_label = pd.read_csv(f"{path.ML}/{file_name}_label.csv", header=None)
+        except pd.errors.EmptyDataError as e:
+            print(file_name)
+        _, tmp2 = predict_single(df_value, df_label, file_name, model_name)
 
-# print(tmp1)
+        # 規約ごとの結果
+        tmp2.to_csv(f"{path.PRERESULT}/single/{model_name}/{file_name}.csv")
+
+if __name__ == '__main__':
+    main()
