@@ -3,7 +3,7 @@ import numpy as np
 import warnings
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import precision_score, recall_score, f1_score, accuracy_score
-from modules import select_model
+from .model_selection import select_model
 warnings.filterwarnings("always", category=UserWarning)
 
 def predict_single(explanatory_variable, label, project_name, model_name):  
@@ -20,8 +20,9 @@ def predict_single(explanatory_variable, label, project_name, model_name):
         Y_test (list): テストデータの目的変数
 
     Returns:
-        dataframe: プロジェクトごとの予測結果（適合率,再現率,F1値,正解率）.1つ目の引数
-        dataframe: プロジェクトごとの全ての規約に対する予測と実際の答えに関するデータフレーム.2つ目の引数
+        tuple: 
+            プロジェクトごとの予測結果（適合率,再現率,F1値,正解率）.1つ目の引数(df)\n
+            プロジェクトごとの全ての規約に対する予測と実際の答えに関するデータフレーム.2つ目の引数(df)
     """
 
     # モデルの初期化
@@ -59,6 +60,4 @@ def predict_single(explanatory_variable, label, project_name, model_name):
     result["f1_score"] = format(f1_score(Y_test, predict_result, zero_division=np.nan), ".2f")
     result["accuracy"] = format(accuracy_score(Y_test, predict_result), ".2f")
 
-
-    
     return pd.DataFrame([result], index=[project_name]), return_df.reset_index(drop=True)

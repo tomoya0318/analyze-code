@@ -1,16 +1,16 @@
 import pandas as pd
 import os
-from modules import predict_single
+from predict.modules import predict_single
 from constants import path
 def main():
     # 宣言
     model_name = "RandomForest"  # Logistic, RandomForest, SVMの３種類から選ぶ
     #単体で予測するプロジェクト名
     project_list = ["python-sdk", "hickle", "GPflow"]
-    conventional_method(project_list, model_name)
+    calculate_individual_project(project_list, model_name)
 
 
-def conventional_method(project_list, model_name):
+def calculate_individual_project(project_list, model_name):
     """project_list内のプロジェクト名単体での予測精度の算出
 
     Args:
@@ -18,8 +18,7 @@ def conventional_method(project_list, model_name):
         model_name (str): 使用するモデル名
     """
     # 結果格納用
-    result_df = pd.DataFrame(columns=["precision", "recall", "f1_score", "accuracy"])
-    dir = f'{path.PRERESULT}/{model_name}'
+    dir = f'{path.PRERESULT}/single/{model_name}'
     if not os.path.exists(dir):
         os.makedirs(dir)
 
