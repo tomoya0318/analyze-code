@@ -23,16 +23,16 @@ def calculate_individual_project(project_list, model_name):
         os.makedirs(dir)
 
     # 単体でのモデル作成，予測
-    for file_name in project_list:
+    for project_name in project_list:
         try:
-            df_value = pd.read_csv(f"{path.ML}/{file_name}_value.csv")
-            df_label = pd.read_csv(f"{path.ML}/{file_name}_label.csv", header=None)
+            df_value = pd.read_csv(f"{path.ML}/{project_name}_value.csv")
+            df_label = pd.read_csv(f"{path.ML}/{project_name}_label.csv", header=None)
         except pd.errors.EmptyDataError as e:
-            print(file_name)
-        _, tmp2 = predict_single(df_value, df_label, file_name, model_name)
+            print(project_name)
+        _, tmp2 = predict_single(df_value, df_label, project_name, model_name)
 
         # 規約ごとの結果
-        tmp2.to_csv(f"{path.PRERESULT}/single/{model_name}/{file_name}.csv")
+        tmp2.to_csv(f"{path.PRERESULT}/single/{model_name}/{project_name}.csv")
 
 if __name__ == '__main__':
     main()

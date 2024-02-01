@@ -1,7 +1,7 @@
 import pandas as pd
 import warnings
 from sklearn.model_selection import train_test_split
-from modules import select_model
+from .model_selection import select_model
 from constants import path
 warnings.filterwarnings("always", category=UserWarning)
 
