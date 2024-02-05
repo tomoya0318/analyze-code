@@ -14,7 +14,7 @@ def create_merge_model(project_list, model_name):
 
     Returns:
         dataframe: マージして作成したモデル.1つ目の引数
-        list: 規約違反のダミー.2つ目の引数
+        list: 規約違反をダミー変数化したもの.2つ目の引数
     """
     train_df = pd.DataFrame()
 

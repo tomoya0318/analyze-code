@@ -1,30 +1,57 @@
 import pandas as pd
-from predict import create_merge_model
+import os
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import precision_score, recall_score, f1_score, accuracy_score
+from predict import create_merge_model
+from constants import path
+from predict.modules import lookup_white_list
 
-# 宣言
-id_dict = {}
-model_name = "RandomForest"  # Logistic, RandomForest, SVMの３種類から選ぶ
-model_all, dummys = create_merge_model(10, model_name)
-result_df = pd.DataFrame(columns=["precision", "recall", "f1_score", "accuracy"])
-for i in list(dummys):
-    id_dict[i] = []
+def main():
+    #すべてのプロジェクト
+    project_list = lookup_white_list(f'{path.DATA}/white_list.txt')
+    # project_list = ["GPflow", "hickle"]
+    model_name = "RandomForest"  # Logistic, RandomForest, SVMの３種類から選ぶ
 
-# project_list = ["GPflow", "python-sdk"]
-project_list = ["GPflow", "hickle"]
+    #マージするプロジェクトの選択
+    for i in range(len(project_list)):
+        for j in range(i, len(project_list)):
+            merge_list = [project_list[i], project_list[j]]
+            model_all, dummys = create_merge_model(project_list, model_name)
+            create_result(merge_list, model_all, dummys, model_name)
 
-path = "few_data"
+def __fetch_test(project_list):
+    """project_listに格納されているプロジェクト名のテストデータの取得をするメソッド
 
-for project_name in project_list:
-    df_value = pd.read_csv(f"{path}/{project_name}_value.csv")
-    df_label = pd.read_csv(f"{path}/{project_name}_label.csv", header=None)
-    _, X_test, _, Y_test = train_test_split(df_value, df_label, test_size=0.2, shuffle=False)
-    Y_test = Y_test.values.ravel()
-    X_test["real_TF"] = Y_test
-    X_test = X_test.reset_index(drop=True)
+    Args:
+        project_list (list): 対象にするプロジェクトのリスト
 
-    id_dict.clear()
+    Returns:
+        dataframe: 目的変数のテストデータ
+    """
+    for project_name in project_list:
+        df_value = pd.read_csv(f"{path.ML}/{project_name}_value.csv")
+        df_label = pd.read_csv(f"{path.ML}/{project_name}_label.csv", header=None)
+        _, X_test, _, Y_test = train_test_split(df_value, df_label, test_size=0.2, shuffle=False)
+        Y_test = Y_test.values.ravel()
+        X_test["real_TF"] = Y_test
+        X_test = X_test.reset_index(drop=True)
+
+    return X_test
+
+def __compare_id_dummys(dummys, X_test):
+    """
+    ダミーデータとテストデータの規約IDを比較し、結果を辞書に格納するメソッド
+
+    Args:
+        dummys(list): 規約IDのダミーデータ
+        X_test(dataframe): テストデータのDataFrame
+
+    Returns:
+        dict: ダミーデータと，テストデータに存在した規約の格納
+    """
+    id_dict = {}
+    for i in list(dummys):
+        id_dict[i] = []
+
     for i in list(dummys):
         id_dict[i] = []
     for wid in X_test["Warning ID"]:
@@ -39,11 +66,31 @@ for project_name in project_list:
 
     id_df = pd.DataFrame(id_dict)
     test_df = pd.concat([id_df, X_test], axis=1)
-    # print(test_df)
 
-    # predict_result = model_all.predict(test_df.drop(['Warning ID', 'Project_name', 'Cluster_num', "AnsTF"], axis=1))
+    return test_df
+
+
+def create_result(merge_list, model_all, dummys, model_name):
+    """マージモデルでの結果の表示
+
+    Args:
+        merge_list (list): マージするプロジェクト
+        model_all (dataframe): プロジェクトの予測モデル
+        dummys (list): 規約IDのダミーデータ
+        model_name (str): モデル名
+    """
+    # 結果格納用
+    id_dict = {}
+    for i in list(dummys):
+        id_dict[i] = []
+
+    dir = f'{path.PRERESULT}/merge/{model_name}'
+    if not os.path.exists(dir):
+        os.makedirs(dir)
+        
+    X_test = __fetch_test(merge_list)
+    test_df = __compare_id_dummys(dummys, X_test)
     predict_result = model_all.predict(test_df.drop(["Warning ID", "Project_name", "real_TF"], axis=1))
-
     test_df["predict_TF"] = predict_result
-    test_df.to_csv(f"results/merge_{model_name}_{project_name}Gh.csv")
+    test_df.to_csv(f"{path.PRERESULT}/merge/{model_name}/{merge_list[0]}merge_{merge_list[0]}_{merge_list[1]}.csv")
 
