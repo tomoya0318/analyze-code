@@ -2,13 +2,13 @@ import pandas as pd
 import os
 from predict.modules import predict_single
 from constants import path
+from predict.modules import lookup_white_list
 def main():
     # 宣言
     model_name = "RandomForest"  # Logistic, RandomForest, SVMの３種類から選ぶ
     #単体で予測するプロジェクト名
-    project_list = ["python-sdk", "hickle", "GPflow"]
+    project_list = lookup_white_list(f'{path.DATA}/white_list.txt')
     calculate_individual_project(project_list, model_name)
-
 
 def calculate_individual_project(project_list, model_name):
     """project_list内のプロジェクト名単体での予測精度の算出
