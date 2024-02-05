@@ -2,16 +2,13 @@ import pandas as pd
 import os
 import warnings
 from sklearn.model_selection import train_test_split
-from constants import path
 warnings.filterwarnings("always", category=UserWarning)
+from constants import path
+from predict.modules import lookup_white_list
 
 def main():
     #プロジェクトの選択
-    project_list = []
-    with open(f'{path.DATA}/white_list.txt', 'r') as f:
-        for line in f:
-            project_list.append(line.strip())
-
+    project_list = lookup_white_list(f'{path.DATA}/white_list.txt')
     #すべてのプロジェクトで，学習データの取得
     for project_name in project_list:
         try:
