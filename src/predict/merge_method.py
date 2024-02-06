@@ -5,7 +5,7 @@ from predict import create_merge_model
 from constants import path
 from predict.modules import lookup_white_list
 from utils import create_dir
-
+from predict.modules import calc_score
 def main():
     # すべてのプロジェクト
     project_list = lookup_white_list(f"{path.DATA}/white_list.txt")
@@ -36,7 +36,6 @@ def __fetch_test(project_list):
         Y_test = Y_test.values.ravel()
         X_test["real_TF"] = Y_test
         X_test = X_test.reset_index(drop=True)
-
     return X_test
 
 
@@ -82,15 +81,14 @@ def create_result(merge_list, model_all, dummys, model_name):
         dummys (list): 規約IDのダミーデータ
         model_name (str): モデル名
     """
-    # 結果格納用
-    id_dict = {}
-    for i in list(dummys):
-        id_dict[i] = []
-
+    
     create_dir(f"{path.PRERESULT}/merge/{model_name}")
 
+    #マージモデルの予測結果の算出
     X_test = __fetch_test(merge_list)
     test_df = __compare_id_dummys(dummys, X_test)
     predict_result = model_all.predict(test_df.drop(["Warning ID", "Project_name", "real_TF"], axis=1))
     test_df["predict_TF"] = predict_result
-    test_df.to_csv(f"{path.PRERESULT}/merge/{model_name}/{merge_list[0]}merge_{merge_list[0]}_{merge_list[1]}.csv")
+    result_df = pd.concat([X_test["Warning ID"], test_df["real_TF"], test_df["predict_TF"]], axis=1)
+    calc_score(result_df, f"{path.PRERESULT}/merge/{model_name}/{merge_list[0]}_merge_{merge_list[0]}_{merge_list[1]}.csv")
+    

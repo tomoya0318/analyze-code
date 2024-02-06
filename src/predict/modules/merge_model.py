@@ -34,10 +34,9 @@ def create_merge_model(project_list, model_name):
         X_train["real_TF"] = Y_train.copy()
         train_df = pd.concat([train_df, X_train], axis=0)
 
-        # コーディング規約IDをダミー変数化
+    # コーディング規約IDをダミー変数化
     df_marge = pd.concat([pd.get_dummies(train_df["Warning ID"]), train_df.drop(columns="Warning ID")], axis=1)
     dummys = list(pd.get_dummies(train_df["Warning ID"]))
-
     try:
         model_all.fit(df_marge.drop(["Project_name", "real_TF"], axis=1), df_marge["real_TF"])
     except ValueError as e:
