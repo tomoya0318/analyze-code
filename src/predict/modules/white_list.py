@@ -8,9 +8,9 @@ def lookup_white_list(txt_file):
         list: プロジェクトのリスト
     """
 
-    #プロジェクトの選択
+    # プロジェクトの選択
     project_list = []
-    with open(txt_file, 'r') as f:
+    with open(txt_file, "r") as f:
         for line in f:
             project_list.append(line.strip())
 

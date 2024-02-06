@@ -3,7 +3,9 @@ import warnings
 from sklearn.model_selection import train_test_split
 from .model_selection import select_model
 from constants import path
+
 warnings.filterwarnings("always", category=UserWarning)
+
 
 def create_merge_model(project_list, model_name):
     """結合したモデルの作成
@@ -18,10 +20,10 @@ def create_merge_model(project_list, model_name):
     """
     train_df = pd.DataFrame()
 
-    #モデルの初期化
+    # モデルの初期化
     model_all = select_model(model_name)
 
-    #プロジェクト数分回す
+    # プロジェクト数分回す
     for project_name in project_list:
         df_value = pd.read_csv(f"{path.ML}/{project_name}_value.csv")
         df_label = pd.read_csv(f"{path.ML}/{project_name}_label.csv", header=None)

@@ -4,9 +4,11 @@ import warnings
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import precision_score, recall_score, f1_score, accuracy_score
 from .model_selection import select_model
+
 warnings.filterwarnings("always", category=UserWarning)
 
-def predict_single(explanatory_variable, label, project_name, model_name):  
+
+def predict_single(explanatory_variable, label, project_name, model_name):
     """予測結果の算出
 
     Args:
@@ -20,7 +22,7 @@ def predict_single(explanatory_variable, label, project_name, model_name):
         Y_test (list): テストデータの目的変数
 
     Returns:
-        tuple: 
+        tuple:
             プロジェクトごとの予測結果（適合率,再現率,F1値,正解率）.1つ目の引数(df)\n
             プロジェクトごとの全ての規約に対する予測と実際の答えに関するデータフレーム.2つ目の引数(df)
     """
@@ -38,7 +40,7 @@ def predict_single(explanatory_variable, label, project_name, model_name):
     Y_train = Y_train.values.ravel()
     Y_test = Y_test.values.ravel()
 
-    #モデルの学習
+    # モデルの学習
     try:
         model.fit(X_train.drop(["Project_name"], axis=1), Y_train)
     except ValueError as e:

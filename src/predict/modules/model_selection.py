@@ -2,8 +2,9 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.svm import SVC
 
+
 def select_model(model_name):
-    """ Logistic,RandomForest,SVMからモデルの選択
+    """Logistic,RandomForest,SVMからモデルの選択
 
     Args:
         model_name (str): 3つのモデルのうち,1つを選択

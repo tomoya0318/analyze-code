@@ -4,19 +4,21 @@ from sklearn.model_selection import train_test_split
 from predict import create_merge_model
 from constants import path
 from predict.modules import lookup_white_list
+from utils import create_dir
 
 def main():
-    #すべてのプロジェクト
-    project_list = lookup_white_list(f'{path.DATA}/white_list.txt')
+    # すべてのプロジェクト
+    project_list = lookup_white_list(f"{path.DATA}/white_list.txt")
     # project_list = ["GPflow", "hickle"]
     model_name = "RandomForest"  # Logistic, RandomForest, SVMの３種類から選ぶ
 
-    #マージするプロジェクトの選択
+    # マージするプロジェクトの選択
     for i in range(len(project_list)):
         for j in range(i, len(project_list)):
             merge_list = [project_list[i], project_list[j]]
             model_all, dummys = create_merge_model(project_list, model_name)
             create_result(merge_list, model_all, dummys, model_name)
+
 
 def __fetch_test(project_list):
     """project_listに格納されているプロジェクト名のテストデータの取得をするメソッド
@@ -36,6 +38,7 @@ def __fetch_test(project_list):
         X_test = X_test.reset_index(drop=True)
 
     return X_test
+
 
 def __compare_id_dummys(dummys, X_test):
     """
@@ -84,13 +87,10 @@ def create_result(merge_list, model_all, dummys, model_name):
     for i in list(dummys):
         id_dict[i] = []
 
-    dir = f'{path.PRERESULT}/merge/{model_name}'
-    if not os.path.exists(dir):
-        os.makedirs(dir)
-        
+    create_dir(f"{path.PRERESULT}/merge/{model_name}")
+
     X_test = __fetch_test(merge_list)
     test_df = __compare_id_dummys(dummys, X_test)
     predict_result = model_all.predict(test_df.drop(["Warning ID", "Project_name", "real_TF"], axis=1))
     test_df["predict_TF"] = predict_result
     test_df.to_csv(f"{path.PRERESULT}/merge/{model_name}/{merge_list[0]}merge_{merge_list[0]}_{merge_list[1]}.csv")
-

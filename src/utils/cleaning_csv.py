@@ -1,6 +1,7 @@
 import os
 import pandas as pd
 
+
 def delete_rows(in_directory, out_directory, init, last):
     """指定行の削除
 

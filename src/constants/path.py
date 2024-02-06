@@ -8,5 +8,5 @@ DATA = f"{ROOT}/data"
 SRC = f"{ROOT}/src"
 OUT = f"{DATA}/out"
 PROCESSED = f"{DATA}/processed"
-ML = f'{DATA}/ml_datasets'
-PRERESULT = f'{DATA}/predict_result'
+ML = f"{DATA}/ml_datasets"
+PRERESULT = f"{DATA}/predict_result"

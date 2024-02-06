@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 
+
 def cos_sim(v1, v2):
     """コサイン類似度の測定
 
