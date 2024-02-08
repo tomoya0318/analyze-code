@@ -3,7 +3,7 @@ import os
 from sklearn.model_selection import train_test_split
 from predict import create_merge_model
 from constants import path
-from predict.modules import lookup_white_list
+from utils import lookup_white_list
 from utils import create_dir
 from predict.modules import calc_score
 def main():

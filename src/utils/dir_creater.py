@@ -6,4 +6,4 @@ def create_dir(create_path):
         create_path (str): ディレクトリを作成したい場所へのpath
     """
     if not os.path.exists(create_path):
-        os.makedirs(dir)
+        os.makedirs(create_path)
