@@ -41,6 +41,17 @@ class ModelCreater:
                 )
 
     def __fetch_train(self, project_list):
+        """学習用モデルの作成
+
+        Args:
+            project_list (list): 学習モデルを作成するプロジェクト名
+
+        Returns:
+            tuple: (model, convention_dummys) の形式のタプル．\n
+               modelは学習済みの機械学習モデルオブジェクト,
+               convention_dummysはモデル学習に使用した特徴量（規約IDのダミー変数化された特徴量）のリスト
+
+        """
         train_df = pd.DataFrame()
         for project_name in project_list:
             df_value = pd.read_csv(f"{path.ML}/{project_name}_value.csv")
@@ -65,13 +76,16 @@ class ModelCreater:
         return self.model, convention_dummys
     
     def  __fetch_test(self, project_name, convention_dummys):
-        """project_listに格納されているプロジェクト名のテストデータの取得をするメソッド
+        """テスト用データの作成
 
-            Args:
-                project_list (list): 対象にするプロジェクトのリスト
+        Args:
+            project_name (str): プロジェクト名
+            convention_dummys (list): モデルデータの規約違反IDをダミー変数に変換したもののリスト
 
-            Returns:
-                dataframe: 目的変数のテストデータ
+        Returns:
+            tuple: (X_test["Warning ID"], test_df)の形式のタプル．\n
+                X_test["Warning ID"]はテストデータの規約違反名のデータフレーム,
+                test_dfは規約違反名をダミー変数化したものをテストデータと繋げたもの
         """
         
         df_value = pd.read_csv(f"{path.ML}/{project_name}_value.csv")
@@ -97,7 +111,15 @@ class ModelCreater:
         test_df = pd.concat([id_df, X_test], axis=1)
         return X_test["Warning ID"], test_df
     
-    def __calc_score_by_convention(self, input_df, out_path):
+    def __calc_score_by_convention(self, input_df):
+        """コーディング規約ごとの再現率，適合率，F値，正解率の算出
+
+        Args:
+            input_df (dataframe): 規約違反名をダミー変数化したものをテストデータと繋げたもの
+
+        Returns:
+            dataframe: 規約ごとの結果をdataframeに格納したもの
+        """
         data_dict = {}
         warnig_ID = input_df["Warning ID"].tolist()
         real_TF = input_df["real_TF"].tolist()
@@ -130,29 +152,100 @@ class ModelCreater:
             result["Accuracy"][id] = accuracy
 
         # 結果のデータフレーム化
-        result_df = pd.DataFrame(result)
-        result_df.to_csv(out_path)
+        return pd.DataFrame(result)
+        
 
     def fit_single_model(self, project_name):
+        """単体でのモデル作成
+
+        Args:
+            project_name (str): モデルを作成するプロジェクト名
+
+        Returns:
+            tuple: (model, convention_dummys) の形式のタプル．\n
+               modelは学習済みの機械学習モデルオブジェクト,
+               convention_dummysはモデル学習に使用した特徴量（規約IDのダミー変数化された特徴量）のリスト
+    
+        """
         return self.__fetch_train([project_name])
         
     def fit_merge_model(self, project_list):
+        """統合バージョンでのモデル作成
+
+        Args:
+            project_list (list): 統合したモデルを作成するプロジェクト名のリスト
+
+        Returns:
+            tuple: (model, convention_dummys) の形式のタプル．\n
+               modelは学習済みの機械学習モデルオブジェクト,
+               convention_dummysはモデル学習に使用した特徴量（規約IDのダミー変数化された特徴量）のリスト
+
+        """
         return self.__fetch_train(project_list)
     
     def predict_single_model(self, project_name, single_model, convention_dummys):
+        """単体モデルでのプロジェクトの予測
+
+        Args:
+            project_name (str): 予測をするプロジェクト名
+            single_model (model): 予測をするのに使用するモデル名
+            convention_dummys (list): モデルデータの規約違反IDをダミー変数に変換したもののリスト
+
+        Returns:
+            tuple: (resul_all, result_convention)の形式のタプル．\n
+                result_allは全体の結果
+                result_conventionは規約ごとの結果
+        """
         warning_id, test_df = self.__fetch_test(project_name, convention_dummys)
         #予測結果の表示
         predict_result = single_model.predict(test_df.drop(["Warning ID", "Project_name", "real_TF"], axis=1))
         test_df["predict_TF"] = predict_result
-        result_df = pd.concat([warning_id, test_df["real_TF"], test_df["predict_TF"]], axis=1)
-        self.__calc_score_by_convention(result_df, f"{path.PRERESULT}/single/{self.model_name}/violations/{project_name}.csv")
         
+        #全体の結果の格納
+        result_all = {"precision": format(precision_score(test_df["real_TF"], predict_result, zero_division=np.nan), ".2f")}
+        result_all["recall"] = format(recall_score(test_df["real_TF"], predict_result, zero_division=np.nan), ".2f")
+        result_all["f1_score"] = format(f1_score(test_df["real_TF"], predict_result, zero_division=np.nan), ".2f")
+        result_all["accuracy"] = format(accuracy_score(test_df["real_TF"], predict_result), ".2f")
+
+        #コーディング規約ごとの結果の格納
+        evaluation_df = pd.concat([warning_id, test_df["real_TF"], test_df["predict_TF"]], axis=1)
+        result_convention = self.__calc_score_by_convention(evaluation_df)
+        
+        return pd.DataFrame([result_all], index = [project_name]), result_convention
+
     def predict_merge_model(self, project_list, merge_model, convention_dummys):
+        """統合したモデルでの予測
+
+        Args:
+            project_list (list): 統合したプロジェクトのリスト
+            merge_model (model): 予測に使用するモデル
+            convention_dummys (list): モデルデータの規約違反IDをダミー変数に変換したもののリスト
+
+        Returns:
+            dict: {project_name, [result_all, result_convention]}の形式の辞書型
+                project_nameはプロジェクト名
+                result_allは全体の結果
+                result_conventionは規約ごとの結果
+
+        """
+        result_dict = {}
         for project_name in project_list:
             warnig_id, test_df = self.__fetch_test(project_name, convention_dummys)
 
             #予測結果の表示
             predict_result = merge_model.predict(test_df.drop(["Warning ID", "Project_name", "real_TF"], axis=1))
             test_df["predict_TF"] = predict_result
-            result_df = pd.concat([warnig_id, test_df["real_TF"], test_df["predict_TF"]], axis=1)
-            self.__calc_score_by_convention(result_df, f"{path.PRERESULT}/merge/{self.model_name}/{project_name}_merge_{project_list[0]}_{project_list[1]}.csv")
+
+            #全体の結果の格納
+            result_all = {"precision": format(precision_score(test_df["real_TF"], predict_result, zero_division=np.nan), ".2f")}
+            result_all["recall"] = format(recall_score(test_df["real_TF"], predict_result, zero_division=np.nan), ".2f")
+            result_all["f1_score"] = format(f1_score(test_df["real_TF"], predict_result, zero_division=np.nan), ".2f")
+            result_all["accuracy"] = format(accuracy_score(test_df["real_TF"], predict_result), ".2f")
+
+            #コーディング規約ごとの結果の格納
+            result_convention = pd.concat([warnig_id, test_df["real_TF"], test_df["predict_TF"]], axis=1)
+            self.__calc_score_by_convention(result_convention)
+
+            result_dict[project_name] = [result_all, result_convention]
+        return result_dict
+
