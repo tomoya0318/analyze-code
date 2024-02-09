@@ -57,9 +57,14 @@ class ModelCreater:
         train_dummys_df = pd.concat([pd.get_dummies(train_df["Warning ID"]), train_df.drop(columns="Warning ID")], axis=1)
         convention_dummys = list(pd.get_dummies(train_df["Warning ID"]))
 
-        return train_dummys_df, convention_dummys
+        #モデルの学習
+        try:
+            self.model.fit(train_dummys_df.drop(["Project_name", "real_TF"], axis=1), train_dummys_df["real_TF"])
+        except ValueError as e:
+            print(e)
+        return self.model, convention_dummys
     
-    def  __fetch_test(self, project_name):
+    def  __fetch_test(self, project_name, convention_dummys):
         """project_listに格納されているプロジェクト名のテストデータの取得をするメソッド
 
             Args:
@@ -75,7 +80,22 @@ class ModelCreater:
         Y_test = Y_test.values.ravel()
         X_test["real_TF"] = Y_test.copy()
         X_test = X_test.reset_index(drop=True)
-        return X_test
+        
+        id_dict = {}
+        for dum_wid in list(convention_dummys):
+            id_dict[dum_wid] = []
+
+        for test_wid in X_test["Warning ID"]:
+            #全てのキーに対して0を追加
+            for i in id_dict.keys():
+                id_dict[i].append(0)
+            #test_widがあれば、その位置の0を1に更新
+            if test_wid in id_dict:
+                id_dict[test_wid][-1] = 1
+
+        id_df = pd.DataFrame(id_dict)
+        test_df = pd.concat([id_df, X_test], axis=1)
+        return X_test["Warning ID"], test_df
     
     def __calc_score_by_convention(self, input_df, out_path):
         data_dict = {}
@@ -102,7 +122,6 @@ class ModelCreater:
             result["Recall"][id] = recall
 
             # F1 Score
-
             f1score = format(f1_score(data_dict[id]["real_TF"], data_dict[id]["predict_TF"], zero_division=np.nan), ".2f")
             result["F1 Score"][id] = f1score
 
@@ -114,36 +133,26 @@ class ModelCreater:
         result_df = pd.DataFrame(result)
         result_df.to_csv(out_path)
 
+    def fit_single_model(self, project_name):
+        return self.__fetch_train([project_name])
+        
     def fit_merge_model(self, project_list):
-        train_dummys_df, convention_dummys = self.__fetch_train(project_list)
-        try:
-            self.model.fit(train_dummys_df.drop(["Project_name", "real_TF"], axis=1), train_dummys_df["real_TF"])
-        except ValueError as e:
-            print(e)
-
-        return self.model, convention_dummys
+        return self.__fetch_train(project_list)
     
+    def predict_single_model(self, project_name, single_model, convention_dummys):
+        warning_id, test_df = self.__fetch_test(project_name, convention_dummys)
+        #予測結果の表示
+        predict_result = single_model.predict(test_df.drop(["Warning ID", "Project_name", "real_TF"], axis=1))
+        test_df["predict_TF"] = predict_result
+        result_df = pd.concat([warning_id, test_df["real_TF"], test_df["predict_TF"]], axis=1)
+        self.__calc_score_by_convention(result_df, f"{path.PRERESULT}/single/{self.model_name}/violations/{project_name}.csv")
+        
     def predict_merge_model(self, project_list, merge_model, convention_dummys):
         for project_name in project_list:
-            print(project_name)
-            id_dict = {}
-            for dum_wid in list(convention_dummys):
-                id_dict[dum_wid] = []
-            X_test = self.__fetch_test(project_name)
-
-            for test_wid in X_test["Warning ID"]:
-                #全てのキーに対して0を追加
-                for i in id_dict.keys():
-                    id_dict[i].append(0)
-                #test_widがあれば、その位置の0を1に更新
-                if test_wid in id_dict:
-                    id_dict[test_wid][-1] = 1
-
-            id_df = pd.DataFrame(id_dict)
-            test_df = pd.concat([id_df, X_test], axis=1)
+            warnig_id, test_df = self.__fetch_test(project_name, convention_dummys)
 
             #予測結果の表示
             predict_result = merge_model.predict(test_df.drop(["Warning ID", "Project_name", "real_TF"], axis=1))
             test_df["predict_TF"] = predict_result
-            result_df = pd.concat([X_test["Warning ID"], test_df["real_TF"], test_df["predict_TF"]], axis=1)
+            result_df = pd.concat([warnig_id, test_df["real_TF"], test_df["predict_TF"]], axis=1)
             self.__calc_score_by_convention(result_df, f"{path.PRERESULT}/merge/{self.model_name}/{project_name}_merge_{project_list[0]}_{project_list[1]}.csv")
