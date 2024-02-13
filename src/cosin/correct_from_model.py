@@ -23,6 +23,14 @@ def __insert_key_if_none(v1, v2):
     return sorted_v1_values
         
 def lookup_from_model(csvfile):
+    """csvファイルから規約の修正率を取得
+
+    Args:
+        csvfile (csv): 規約IDと修正可否が含まれているcsvファイル
+
+    Returns:
+        dict: {Warning ID, [fixed_convention, total_convention]}という辞書型で返す
+    """
     convention_dict = {}
     total_convention = 0
     fixed_convention = 0
@@ -46,6 +54,15 @@ def lookup_from_model(csvfile):
     return dict(sorted(convention_dict.items()))
 
 def calc_cosin(v1, v2):
+    """2つのプロジェクトの規約修正率のコサイン類似度の測定
+
+    Args:
+        v1 (dict): 1つ目のプロジェクトの規約IDと修正数，発生数が含まれている辞書
+        v2 (dict): 2つ目のプロジェクトの規約IDと修正数，発生数が含まれている辞書
+
+    Returns:
+        float: 2つのプロジェクトの規約修正率のコサイン類似度
+    """
     v1_out = __insert_key_if_none(v1, v2)
     v2_out = __insert_key_if_none(v2, v1)
 
