@@ -4,7 +4,7 @@ import pandas as pd
 from src.constants import path
 from src.predict.model_creater import ModelCreater
 
-class PreTest(unittest.TestCase):
+class TestPredict(unittest.TestCase):
     def setUp(self):
         self.project_name = "python-sdk"
         self.merge_list = ['python-sdk', 'GPflow']
