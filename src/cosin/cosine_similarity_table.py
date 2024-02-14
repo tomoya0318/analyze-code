@@ -3,14 +3,16 @@ from utils import calculate_cosin_similarity
 from utils import load_correction_data as ld
 from constants import path
 
+
 def main():
     path_in = f"{path.OUT}/cleaned_tracking_all_convention.csv"
-    #プロジェクトの選択
+    # プロジェクトの選択
     project_list = []
-    with open(f'{path.DATA}/white_list.txt', 'r') as f:
+    with open(f"{path.DATA}/white_list.txt", "r") as f:
         for line in f:
             project_list.append(line.strip())
     calculate_cosin_similarities(project_list, path_in)
+
 
 def calculate_cosin_similarities(project_list, path_in):
     project_num = len(project_list)
@@ -45,5 +47,6 @@ def calculate_cosin_similarities(project_list, path_in):
     # 結果の表示
     df.to_csv(f"{path.OUT}/sort_cosine.csv", index=False)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

@@ -18,8 +18,6 @@ PATH_OUT = f"{path.OUT}/tracking_all_convention.csv"
 # 規約発生数表示用
 # PATH_OUT = f'{PATH}/out/tracking_occur_convention.csv'
 
-PROJECT_NAME_LIST = get_file_name(PATH_IN)
-
 coding_convention_list = []
 all_list = []
 result_list = []
