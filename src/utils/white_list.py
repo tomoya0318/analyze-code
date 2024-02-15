@@ -14,5 +14,4 @@ def lookup_white_list(txt_file):
         for line in f:
             project_list.append(line.strip())
     project_list.sort(key=str.lower)
-    print(project_list)
     return project_list
