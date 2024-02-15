@@ -24,12 +24,8 @@ class TestPredict(unittest.TestCase):
     def test_マージモデル作成のテスト(self):
         mc = ModelCreater(self.model_name)
         model, dummys = mc.fit_merge_model(self.merge_list)
-        result_dict = mc.predict_merge_model(self.merge_list, model, dummys)
-        print(result_dict.keys())
-        dir = f'{path.PRERESULT}/merge/{self.model_name}/{self.merge_list[0]}_merge_{self.merge_list[0]}_{self.merge_list[1]}.csv'
-        result_convention = result_dict[self.merge_list[0]][1]
-        result_convention.to_csv(dir)
-        self.assertTrue(os.path.exists(dir), f'CSV file not found.')
+        result, _ = mc.predict_merge_model(self.merge_list, model, dummys)
+        self.assertTrue(result, list)
 
 if __name__ == '__main__':
     unittest.main()

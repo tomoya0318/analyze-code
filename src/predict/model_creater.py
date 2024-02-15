@@ -222,14 +222,11 @@ class ModelCreater:
             convention_dummys (list): モデルデータの規約違反IDをダミー変数に変換したもののリスト
 
         Returns:
-            dict: {project_name, [result_all, result_convention]}の形式の辞書型
-                project_nameはプロジェクト名
-                result_allは全体の結果
-                result_conventionは規約ごとの結果
+            list: [project1, project2]という形式で返す.それぞれのプロジェクトは全体の結果と，規約ごとの結果をもつ
 
         """
-        result_dict = {}
-        for project_name in project_list:
+        result_list = [[] for _ in range(2)]
+        for i, project_name in enumerate(project_list):
             warnig_id, test_df = self.__fetch_test(project_name, convention_dummys)
 
             #予測結果の表示
@@ -237,15 +234,19 @@ class ModelCreater:
             test_df["predict_TF"] = predict_result
 
             #全体の結果の格納
-            result_all = {"precision": format(precision_score(test_df["real_TF"], predict_result, zero_division=np.nan), ".2f")}
-            result_all["recall"] = format(recall_score(test_df["real_TF"], predict_result, zero_division=np.nan), ".2f")
-            result_all["f1_score"] = format(f1_score(test_df["real_TF"], predict_result, zero_division=np.nan), ".2f")
-            result_all["accuracy"] = format(accuracy_score(test_df["real_TF"], predict_result), ".2f")
+            result_all = {
+            "precision": format(precision_score(test_df["real_TF"], predict_result, zero_division=np.nan), ".2f"),
+            "recall": format(recall_score(test_df["real_TF"], predict_result, zero_division=np.nan), ".2f"),
+            "f1_score": format(f1_score(test_df["real_TF"], predict_result, zero_division=np.nan), ".2f"),
+            "accuracy": format(accuracy_score(test_df["real_TF"], predict_result), ".2f")
+            }
+            other_project_name = project_list[1 - i]
+            result_df = pd.DataFrame([result_all], index = [other_project_name])
 
             #コーディング規約ごとの結果の格納
-            result_convention = pd.concat([warnig_id, test_df["real_TF"], test_df["predict_TF"]], axis=1)
-            self.__calc_score_by_convention(result_convention)
+            result_convention_df = pd.concat([warnig_id, test_df["real_TF"], test_df["predict_TF"]], axis=1)
+            self.__calc_score_by_convention(result_convention_df)
 
-            result_dict[project_name] = [result_all, result_convention]
-        return result_dict
+            result_list[i] = [result_df, result_convention_df]
+        return result_list[0], result_list[1]
 
