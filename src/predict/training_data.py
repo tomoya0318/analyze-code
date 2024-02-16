@@ -9,7 +9,7 @@ from utils import create_dir
 
 def main():
     # プロジェクトの選択
-    project_list = lookup_white_list(f"{path.DATA}/white_list.txt")
+    project_list = lookup_white_list(path.WHITELIST)
     # すべてのプロジェクトで，学習データの取得
     for project_name in project_list:
         try:
