@@ -3,6 +3,7 @@ import os
 import pandas as pd
 from src.constants import path
 from src.predict.model_creater import ModelCreater
+from src.predict.main import all
 
 class TestPredict(unittest.TestCase):
     def setUp(self):
