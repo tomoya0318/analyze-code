@@ -202,16 +202,18 @@ class ModelCreater:
         test_df["predict_TF"] = predict_result
         
         #全体の結果の格納
-        result_all = {"precision": format(precision_score(test_df["real_TF"], predict_result, zero_division=np.nan), ".2f")}
-        result_all["recall"] = format(recall_score(test_df["real_TF"], predict_result, zero_division=np.nan), ".2f")
-        result_all["f1_score"] = format(f1_score(test_df["real_TF"], predict_result, zero_division=np.nan), ".2f")
-        result_all["accuracy"] = format(accuracy_score(test_df["real_TF"], predict_result), ".2f")
-
+        result_all = {
+            "precision": format(precision_score(test_df["real_TF"], predict_result, zero_division=np.nan), ".2f"),
+            "recall": format(recall_score(test_df["real_TF"], predict_result, zero_division=np.nan), ".2f"),
+            "f1_score": format(f1_score(test_df["real_TF"], predict_result, zero_division=np.nan), ".2f"),
+            "accuracy": format(accuracy_score(test_df["real_TF"], predict_result), ".2f")
+        }
+        result_df = pd.DataFrame([result_all], index = [project_name])
         #コーディング規約ごとの結果の格納
         evaluation_df = pd.concat([warning_id, test_df["real_TF"], test_df["predict_TF"]], axis=1)
         result_convention = self.__calc_score_by_convention(evaluation_df)
         
-        return pd.DataFrame([result_all], index = [project_name]), result_convention
+        return result_df, result_convention
 
     def predict_merge_model(self, project_list, merge_model, convention_dummys):
         """統合したモデルでの予測
