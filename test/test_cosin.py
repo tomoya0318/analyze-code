@@ -15,8 +15,8 @@ class TestCosin(unittest.TestCase):
     def test_コサイン類似度測定(self):
         v1 = lookup_from_model(self.input_path)
         v2 = lookup_from_model(f"{path.PRERESULT}/raw_model/GPflow_train.csv")
-        result = calc_cosin(v1, v2)
-        # self.assertTrue(result, list)
+        cos_sim, count = calc_cosin(v1, v2)
+        self.assertTrue(cos_sim, int)
 
 if __name__ == '__main__':
     unittest.main()
