@@ -14,6 +14,8 @@ def single_convention():
         result_convention.to_csv(f"{path.PRERESULT}/single/{model_name}/violations/{project_name}.csv")
 
 def all():
+    """全体の予測値を算出するメソッド
+    """
     model_name = "RandomForest"
     project_list = lookup_white_list(path.WHITELIST)
     for project_name in tqdm(project_list, total=len(project_list)):
