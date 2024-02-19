@@ -20,8 +20,12 @@ def main():
                         {
                             "Project 1": [name1],
                             "fix_count1": [sum(item[0] for item in name1_dict.values())],
+                            "total_count1": [sum(item[1] for item in name1_dict.values())],
+                            "average1": [(sum(item[0] for item in name1_dict.values()) / sum(item[1] for item in name1_dict.values()))],
                             "Project 2": [name2],
                             "fix_count2": [sum(item[0] for item in name2_dict.values())],
+                            "total_count2": [sum(item[1] for item in name2_dict.values())],
+                            "average2": [(sum(item[0] for item in name2_dict.values()) / sum(item[1] for item in name2_dict.values()))],
                             "cos_sim": [cosin_sim],
                             "not_nan": [nan_count],
                         }
