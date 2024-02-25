@@ -94,7 +94,7 @@ def calc_cosin(v1, v2):
 
     return cosin_sim
     
-def count_both_none(v1, v2 = None, border = 0.2):
+def count_values_exceeding_limit(v1, v2 = None, border = 0.2):
     """両方のプロジェクトに共通してボーダー以上の修正率の規約が存在する数をカウントするメソッド
 
     Args:
