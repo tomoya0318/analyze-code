@@ -13,7 +13,7 @@ def main():
             name2_dict = lookup_from_model(f"{path.PRERESULT}/raw_model/{name2}_train.csv")
 
             cosin_sim = calc_cosin(name1_dict, name2_dict)
-            nan_count = count_both_none(name1_dict, name2_dict, border=0.1)
+            nan_count = count_values_exceeding_limit(name1_dict, name2_dict, border=0.1)
             df = pd.concat(
                 [
                     df,
